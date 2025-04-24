@@ -3,6 +3,7 @@ package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.LoginRequestDTO;
 import com.hikers.hikemate.dto.LoginResponseDTO;
+import com.hikers.hikemate.dto.SignupResponseDTO;
 import com.hikers.hikemate.dto.UserSignupDTO;
 import com.hikers.hikemate.entity.User;
 import com.hikers.hikemate.jwt.JwtUtil;
@@ -34,10 +35,20 @@ public class UserController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserSignupDTO signupDTO) {
         User savedUser = userService.registerUser(signupDTO);
 
-        // 응답 데이터 포맷 간단히 구성
-        return ResponseEntity.ok().body(
-                new SignupResponse(savedUser.getUserId(), savedUser.getNickname(), savedUser.getEmail())
+        if (savedUser == null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "409 CONFLICT");  // 중복된 사용자 ID
+            response.put("message", "이미 사용 중인 아이디입니다.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
+
+        SignupResponseDTO response = new SignupResponseDTO(
+                savedUser.getUserId(),
+                savedUser.getNickname(),
+                savedUser.getEmail()
         );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 응답 DTO (필요한 필드만 보내기)
@@ -47,10 +58,25 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequestDTO loginRequestDTO) {
 
-        String token = userService.login(loginRequestDTO);
+        String result = userService.login(loginRequestDTO);
+
+        // 로그인 실패 시
+        if (result.equals("ID_NOT_FOUND")) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "400 BAD REQUEST");
+            response.put("message", "존재하지 않는 아이디입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        if (result.equals("INVALID_PASSWORD")) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "400 BAD REQUEST");
+            response.put("message", "비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
 
         // JWT 토큰 반환
-        return ResponseEntity.ok().body(new LoginResponseDTO(token));
+        return ResponseEntity.ok().body(new LoginResponseDTO(result));
     }
 
     @PostMapping("/logout")

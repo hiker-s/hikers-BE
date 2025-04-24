@@ -1,9 +1,12 @@
 package com.hikers.hikemate.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
-public class UserResponseDTO {
+@Getter
+@AllArgsConstructor
+public class SignupResponseDTO {
     private String user_id;
     private String nickname;
     private String email;

@@ -28,7 +28,7 @@ public class UserService {
     public User registerUser(UserSignupDTO request) {
         // 1. 중복 검사
         if (userRepository.findByUserId(request.getUserId()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 사용 중인 아이디입니다.");
+            return null;
 
         }
 
@@ -49,10 +49,15 @@ public class UserService {
     // 로그인 처리
     public String login(LoginRequestDTO loginRequestDTO) {
         User user = userRepository.findByUserId(loginRequestDTO.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디가 존재하지 않습니다."));
+                .orElse(null);
 
+        if (user == null) {
+            return "ID_NOT_FOUND";  // 아이디가 없을 경우
+        }
+
+        // 비밀번호 확인
         if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswd())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.");
+            return "INVALID_PASSWORD";  // 비밀번호 불일치
         }
 
         return JwtUtil.generateToken(user.getUserId());
