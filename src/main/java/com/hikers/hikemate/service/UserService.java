@@ -68,6 +68,15 @@ public class UserService {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다: " + userId));
     }
+
+    public String getNicknameFromToken(String token) {
+        String userId = JwtUtil.extractUserId(token);  // 토큰에서 userId 추출
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다: " + userId));
+
+        return user.getNickname();
+    }
+
     public boolean deleteUserByUserId(String userId) {
         Optional<User> userOptional = userRepository.findByUserId(userId);
 
