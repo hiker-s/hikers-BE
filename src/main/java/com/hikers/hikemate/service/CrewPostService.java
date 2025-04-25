@@ -25,16 +25,19 @@ public class CrewPostService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final S3Service s3Service;
+    private final ImageService imageService;
 
     @Autowired
     public CrewPostService(CrewPostRepository crewPostRepository,
                            UserRepository userRepository,
                            JwtUtil jwtUtil,
-                           S3Service s3Service) {
+                           S3Service s3Service,
+                           ImageService imageService) {
         this.crewPostRepository = crewPostRepository;
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.s3Service = s3Service;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -76,4 +79,53 @@ public class CrewPostService {
         // CrewPost 저장
         return crewPostRepository.save(crewPost);
     }
+
+
+    public CrewPost getCrewPostById(Long id) {
+
+        Optional<CrewPost> crewPostOptional = crewPostRepository.findById(id);
+
+        if (crewPostOptional.isPresent()) {
+            return crewPostOptional.get();  // 게시물이 존재하면 반환
+        } else {
+
+            throw new IllegalArgumentException("게시물을 찾을 수 없습니다.");
+        }
+
+
+    }
+
+    //권한 확인 > 이미지 일괄 삭제 > 이미지 일괄 저장 > 나머지 덮어쓰기
+    @Transactional
+    public CrewPost updateCrewPost(Long postId, User user, CrewPostRequestDTO dto) {
+        // 1) 조회
+        CrewPost post = crewPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+
+        // 2) 권한 체크
+        if (!post.getAuthor().getId().equals(user.getId())) {
+            throw new RuntimeException("수정 권한이 없습니다.");
+        }
+
+        // 3) 기존 이미지 완전 삭제
+        imageService.deleteImagesByPost(post);
+
+        // 4) 새 이미지 저장
+        List<Image> saved = imageService.saveImages(dto.getImages(), post);
+        post.setImages(saved);
+
+        // 5) 본문·제목 덮어쓰기
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+
+        // 6) 저장 후 반환 (flush & commit)
+        return crewPostRepository.save(post);
+    }
+
+    //마지막 목록
+    public List<CrewPost> getAllCrewPosts() {
+        return crewPostRepository.findAll();
+    }
+
+
 }

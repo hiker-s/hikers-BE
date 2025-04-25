@@ -33,7 +33,7 @@ public class CrewPost {
     @Lob
     private String content;
 
-    @OneToMany(mappedBy = "crewPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "crewPost", cascade = CascadeType.ALL)
     private List<Image> images;
 
     @PrePersist
@@ -44,7 +44,6 @@ public class CrewPost {
     public String getAuthorName() {
         return author != null ? author.getNickname() : "Unknown";
     }
-
 
 
 }

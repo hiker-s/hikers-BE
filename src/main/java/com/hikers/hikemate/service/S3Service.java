@@ -45,4 +45,9 @@ public class S3Service {
     private String getPublicUrl(String fileName) {
         return String.format("https://%s.s3.%s.amazonaws.com/%s", bucket, amazonS3.getRegionName(), fileName);
     }
+    public void deleteImage(String imageUrl) {
+        // URL에서 키만 추출 (버킷 이름과 도메인을 제외한 파일 이름 부분)
+        String key = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        amazonS3.deleteObject(bucket, key);
+    }
 }

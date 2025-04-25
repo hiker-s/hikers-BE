@@ -10,14 +10,16 @@ import java.util.List;
 public class CrewPostResponseDTO {
     private Long id;
     private String authorName;
+    private String title;
     private String content;
     private List<String> imageUrls;
     private String createdAt;
 
     // 생성자 수정: authorName을 user의 nickname으로 설정
-    public CrewPostResponseDTO(Long id, User author, String content, List<String> imageUrls, LocalDateTime createdAt) {
+    public CrewPostResponseDTO(Long id, User author, String title, String content, List<String> imageUrls, LocalDateTime createdAt) {
         this.id = id;
         this.authorName = author.getNickname(); // User에서 nickname 가져오기
+        this.title = title;
         this.content = content;
         this.imageUrls = imageUrls;
 
@@ -33,6 +35,13 @@ public class CrewPostResponseDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthorName() {
