@@ -1,5 +1,6 @@
 package com.hikers.hikemate.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,12 @@ public class CrewPost {
     private String title;
 
     @Column(nullable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @Lob
     private String content;
@@ -35,6 +41,9 @@ public class CrewPost {
         createdAt = LocalDateTime.now();
     }
 
+    public String getAuthorName() {
+        return author != null ? author.getNickname() : "Unknown";
+    }
 
 
 
