@@ -5,11 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class ReviewPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
+    @Column(name = "reviewId")
     private int id;
 
 
@@ -32,7 +33,7 @@ public class ReviewPost {
     //코스와의 연관관계 > 여기서 해당 하는 코스를 입력하면 자동으로 산으로까지 이어질텐데 굳이 필요한가?
     @ManyToOne
     @JoinColumn(name = "course_id")
-    private String course;
+    private Course course;
 
     private String level;
 
