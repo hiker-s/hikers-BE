@@ -18,8 +18,8 @@ public class Course {
     private String courseFilePath;
 
     @Column(precision = 10, scale = 5)
-    private BigDecimal courseLastLan;
+    private BigDecimal courseLastLat;
 
     @Column(precision = 10, scale = 5)
-    private BigDecimal courseLatLon;
+    private BigDecimal courseLatLng;
 }
