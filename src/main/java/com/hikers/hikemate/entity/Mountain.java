@@ -1,13 +1,11 @@
 package com.hikers.hikemate.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 
 public class Mountain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="mntID")
     private Long id;
 
     private String mntName;
