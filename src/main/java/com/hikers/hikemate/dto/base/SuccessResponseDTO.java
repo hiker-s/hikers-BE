@@ -8,5 +8,5 @@ import lombok.Getter;
 public class SuccessResponseDTO<T> {
     private int stats;
     private String message;
-    private T data;
+    private T result;
 }
