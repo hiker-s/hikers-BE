@@ -252,5 +252,37 @@ public class ReviewPostController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deleteReviewPost(
+            @PathVariable Long postId,
+            @RequestHeader("Authorization") String token) {
+
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponseDTO(400, "유효하지 않은 토큰입니다."));
+        }
+
+        String userId = jwtUtil.extractUserId(token.substring(7).trim());
+
+        // 서비스 호출에서 '권한 부족' 처리를 직접 해줘
+        try {
+            reviewPostService.deleteReviewPost(postId, userId);
+
+            SuccessResponseDTO<String> response =
+                    new SuccessResponseDTO<>(200, "리뷰가 성공적으로 삭제되었습니다.", null);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponseDTO(404, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponseDTO(401, "삭제 권한이 없습니다."));  // 여기서 직접 401 처리
+        }
+    }
+
+
+
+
 
 }

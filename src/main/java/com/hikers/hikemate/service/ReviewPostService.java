@@ -275,6 +275,28 @@ public class ReviewPostService {
                 .map(like -> toResponseDTO(like.getReviewPost(), userId))
                 .collect(Collectors.toList());
     }
+    @Transactional
+    public void deleteReviewPost(Long postId, String userId) {
+        // 1) 게시글 가져오기
+        ReviewPost post = reviewPostRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+
+        // 2) 작성자인지 확인
+        if (!post.getAuthor().getUserId().equals(userId)) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+
+        // 3) 연관된 이미지 삭제 (DB + S3)
+        imageService.deleteImagesByPost(post);
+
+        // 4) 연관된 좋아요 삭제
+        List<Like> likes = likeRepository.findByReviewPost(post);
+        likeRepository.deleteAll(likes);
+
+        // 5) 게시글 삭제
+        reviewPostRepository.delete(post);
+    }
+
 
 
 
