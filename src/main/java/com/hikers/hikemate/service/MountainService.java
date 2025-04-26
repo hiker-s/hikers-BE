@@ -24,26 +24,31 @@ public class MountainService {
         List<Mountain> mountains = mountainRepository.findAll();
 
         return mountains.stream()
-                .map(mountain -> new MountainGetAllResponseDto(
-                        mountain.getId(),
-                        mountain.getMntName(),
-                        mountain.getMntInfo(),
-                        mountain.getCourses().stream()
-                                .map(course -> new CourseDetailDto(
-                                        course.getId(),
-                                        course.getCourseFilePath(),
-                                        course.getCourseName(),
-                                        course.getStartName(),
-                                        course.getEndName(),
-                                        course.getLevel(),
-                                        course.getTime()
-                                ))
-                                .collect(Collectors.toList())
-                ))
+                .map(this::generateCoursesDto)
                 .collect(Collectors.toList());
     }
 
-    public Optional<Mountain> getMountain(Long mnt_id) {
-        return mountainRepository.findById(mnt_id);
+    public MountainGetAllResponseDto getMountain(Long mnt_id) {
+
+        return generateCoursesDto(mountainRepository.findById(mnt_id).get());
+    }
+
+    private MountainGetAllResponseDto generateCoursesDto(Mountain mountain) {
+        return new MountainGetAllResponseDto(
+                mountain.getId(),
+                mountain.getMntName(),
+                mountain.getMntInfo(),
+                mountain.getCourses().stream()
+                        .map(course -> new CourseDetailDto(
+                                course.getId(),
+                                course.getCourseFilePath(),
+                                course.getCourseName(),
+                                course.getStartName(),
+                                course.getEndName(),
+                                course.getLevel(),
+                                course.getTime()
+                        ))
+                        .collect(Collectors.toList())
+                );
     }
 }
