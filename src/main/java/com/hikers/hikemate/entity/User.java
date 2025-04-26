@@ -41,6 +41,8 @@ public class User {
     //오늘 집가서 랭크 관련 필드 만들어는 놔야함
 
     //추후 도장 개발시 도장에 대한 list 객체 추가 필요
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stamp> stamps = new ArrayList<>();
 
     //리뷰와의 연결 필요
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
