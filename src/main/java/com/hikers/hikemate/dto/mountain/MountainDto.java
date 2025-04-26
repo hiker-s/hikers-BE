@@ -14,5 +14,6 @@ public class MountainDto {
     private Long id;
     private String mntName;
     private String mntInfo;
+    private Integer viewCount;
     private List<CourseDetailDto> courses;
 }

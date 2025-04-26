@@ -2,6 +2,8 @@ package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.mountain.MountainDto;
+import com.hikers.hikemate.entity.Mountain;
+import com.hikers.hikemate.repository.MountainRepository;
 import com.hikers.hikemate.service.MountainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 public class MountainController {
 
     private final MountainService mountainService;
+    private final MountainRepository mountainRepository;
 
     @GetMapping("/list")
     public ResponseEntity<?> mountainGetAll() {
@@ -32,6 +35,11 @@ public class MountainController {
     public ResponseEntity<?> mountainGetById(
             @PathVariable Long mnt_id
     ) {
+        // 조회수 증가
+        Mountain mountain = mountainRepository.findById(mnt_id).get();
+        mountain.setViewCount(mountain.getViewCount() + 1);
+        mountainRepository.save(mountain);
+
         MountainDto mountainDto = mountainService.getMountain(mnt_id);
 
         SuccessResponseDTO<MountainDto> response =
