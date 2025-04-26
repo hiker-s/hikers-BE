@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class ScrapResponseDto {
-
+public class ScrapsByUserDTO {
     private UserIdNickNameDto user;
-    private ScrapDTO scrap;
+    private List<ScrapDTO> scraps;
 }

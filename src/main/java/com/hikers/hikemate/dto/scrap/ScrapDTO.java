@@ -1,5 +1,6 @@
 package com.hikers.hikemate.dto.scrap;
 
+import com.hikers.hikemate.dto.course.CourseDetailDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,5 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ScrapDTO {
-    private Long id;
+    private Long scrap_id;
+    private CourseDetailDto course;
 }
