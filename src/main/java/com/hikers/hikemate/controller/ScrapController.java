@@ -33,22 +33,8 @@ public class ScrapController {
             @RequestParam("course_id") Long course_id
     ) {
         try {
-            // JWT 토큰을 통해 사용자 정보 추출
-            String userId;
-            String pureToken;
-            if (token.startsWith("Bearer ")) {
-                pureToken = token.substring(7).trim();
-                try {
-                    userId = jwtUtil.extractUserId(pureToken);
-                } catch (Exception e) {
-                    // 토큰 파싱 실패
-                    return ResponseEntity.status(401).body(new ErrorResponseDTO(401, "유효하지 않은 토큰 입니다."));
-                }
-            } else {
-                return ResponseEntity.status(401).body(new ErrorResponseDTO(401, "유효하지 않은 토큰 형식입니다."));
-            }
-
-            User user = userService.findUserByUserId(userId);
+            // 사용자 정보 추출
+            User user = jwtUtil.getUserFromToken(token);
             Course course = courseService.findCourseById(course_id);
 
             Scrap scrap = scrapService.postScrap(user, course);
@@ -68,6 +54,9 @@ public class ScrapController {
         } catch (IllegalStateException e) {
             // 스크랩 중복 에러
             return ResponseEntity.status(400).body(new ErrorResponseDTO(400, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            // 토큰 관련 에러
+            return ResponseEntity.status(401).body(new ErrorResponseDTO(401, e.getMessage()));
         } catch (Exception e) {
             // 알 수 없는 서버 에러
             return ResponseEntity.status(500).body(new ErrorResponseDTO(500, "서버 내부 오류가 발생했습니다."));
@@ -80,22 +69,8 @@ public class ScrapController {
             @RequestParam("course_id") Long course_id
     ) {
         try {
-            // JWT 토큰을 통해 사용자 정보 추출
-            String userId;
-            String pureToken;
-            if (token.startsWith("Bearer ")) {
-                pureToken = token.substring(7).trim();
-                try {
-                    userId = jwtUtil.extractUserId(pureToken);
-                } catch (Exception e) {
-                    // 토큰 파싱 실패
-                    return ResponseEntity.status(401).body(new ErrorResponseDTO(401, "유효하지 않은 토큰 입니다."));
-                }
-            } else {
-                return ResponseEntity.status(401).body(new ErrorResponseDTO(401, "유효하지 않은 토큰 형식입니다."));
-            }
-
-            User user = userService.findUserByUserId(userId);
+            // 사용자 정보 추출
+            User user = jwtUtil.getUserFromToken(token);
             Course course = courseService.findCourseById(course_id);
 
             scrapService.deleteScrap(user, course);
@@ -105,6 +80,9 @@ public class ScrapController {
         } catch (IllegalStateException e) {
             // 스크랩 하지 않았을 때 에러
             return ResponseEntity.status(400).body(new ErrorResponseDTO(400, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            // 토큰 관련 에러
+            return ResponseEntity.status(401).body(new ErrorResponseDTO(401, e.getMessage()));
         } catch (Exception e) {
             // 알 수 없는 서버 에러
             return ResponseEntity.status(500).body(new ErrorResponseDTO(500, "서버 내부 오류가 발생했습니다."));

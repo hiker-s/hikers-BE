@@ -1,9 +1,14 @@
 package com.hikers.hikemate.jwt;
 
+import com.hikers.hikemate.entity.User;
+import com.hikers.hikemate.service.CourseService;
+import com.hikers.hikemate.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -13,9 +18,12 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
     private static final String SECRET = "yourVeryLongSuperSecretKeyThatIsAtLeast32Charsssss";
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    private final UserService userService;
+
 
     public static String generateToken(String username) {
         return Jwts.builder()
@@ -51,4 +59,21 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
+    // 사용자 정보를 토큰에서 추출하는 메소드
+    public User getUserFromToken(String token) {
+        String userId;
+        String pureToken;
+        if (token.startsWith("Bearer ")) {
+            pureToken = token.substring(7).trim();
+            try {
+                userId = this.extractUserId(pureToken);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("유효하지 않은 토큰 입니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 토큰 형식입니다.");
+        }
+
+        return userService.findUserByUserId(userId);
+    }
 }
