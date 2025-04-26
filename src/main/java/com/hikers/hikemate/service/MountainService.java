@@ -1,14 +1,12 @@
 package com.hikers.hikemate.service;
 
 import com.hikers.hikemate.dto.course.CourseDetailDto;
-import com.hikers.hikemate.dto.mountain.MountainGetAllResponseDto;
+import com.hikers.hikemate.dto.mountain.MountainDto;
 import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.repository.MountainRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +18,7 @@ public class MountainService {
         this.mountainRepository = mountainRepository;
     }
 
-    public List<MountainGetAllResponseDto> getAllMountains() {
+    public List<MountainDto> getAllMountains() {
         List<Mountain> mountains = mountainRepository.findAll();
 
         return mountains.stream()
@@ -28,13 +26,13 @@ public class MountainService {
                 .collect(Collectors.toList());
     }
 
-    public MountainGetAllResponseDto getMountain(Long mnt_id) {
+    public MountainDto getMountain(Long mnt_id) {
 
         return generateCoursesDto(mountainRepository.findById(mnt_id).get());
     }
 
-    private MountainGetAllResponseDto generateCoursesDto(Mountain mountain) {
-        return new MountainGetAllResponseDto(
+    private MountainDto generateCoursesDto(Mountain mountain) {
+        return new MountainDto(
                 mountain.getId(),
                 mountain.getMntName(),
                 mountain.getMntInfo(),

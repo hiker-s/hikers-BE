@@ -1,8 +1,7 @@
 package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
-import com.hikers.hikemate.dto.mountain.MountainGetAllResponseDto;
-import com.hikers.hikemate.entity.Mountain;
+import com.hikers.hikemate.dto.mountain.MountainDto;
 import com.hikers.hikemate.service.MountainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +21,8 @@ public class MountainController {
 
     @GetMapping("/list")
     public ResponseEntity<?> mountainGetAll() {
-        List<MountainGetAllResponseDto> mountainList = mountainService.getAllMountains();
-        SuccessResponseDTO<List<MountainGetAllResponseDto>> response =
+        List<MountainDto> mountainList = mountainService.getAllMountains();
+        SuccessResponseDTO<List<MountainDto>> response =
                 new SuccessResponseDTO<>(200, "산 리스트 조회 성공", mountainList);
 
         return ResponseEntity.ok(response);
@@ -34,9 +32,9 @@ public class MountainController {
     public ResponseEntity<?> mountainGetById(
             @PathVariable Long mnt_id
     ) {
-        MountainGetAllResponseDto mountainDto = mountainService.getMountain(mnt_id);
+        MountainDto mountainDto = mountainService.getMountain(mnt_id);
 
-        SuccessResponseDTO<MountainGetAllResponseDto> response =
+        SuccessResponseDTO<MountainDto> response =
                 new SuccessResponseDTO<>(200, "산 상세 조회 성공", mountainDto);
 
         return ResponseEntity.ok(response);
