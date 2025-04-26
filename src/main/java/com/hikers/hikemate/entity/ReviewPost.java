@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,11 +50,23 @@ public class ReviewPost {
 
     private String level;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
     // like entity 만들고 나서 작성
-    // private int likedCnt;
+    @OneToMany(mappedBy = "reviewPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+    private int likeCount;
+
+    @PrePersist
+    @PreUpdate
+    protected void onCreateOrUpdate() {
+        // 작성 시간 설정
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+
+        // 좋아요 갯수 자동 갱신
+        if (this.likes == null) {
+            this.likes = new ArrayList<>();
+        }
+    }
 }
