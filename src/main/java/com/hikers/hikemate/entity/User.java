@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -44,5 +45,9 @@ public class User {
     //리뷰와의 연결 필요
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewPost> reviewPosts;
+
+    // 코스 스크랩, 양방향 매핑(내가 스크랩한 코스를 보여주기 위함)
+    @OneToMany(mappedBy = "user")
+    private List<Scrap> scraps;
 
 }

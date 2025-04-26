@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +31,19 @@ public class MountainService {
                         mountain.getCourses().stream()
                                 .map(course -> new CourseDetailDto(
                                         course.getId(),
+                                        course.getCourseFilePath(),
                                         course.getCourseName(),
-                                        course.getCourseFilePath()
+                                        course.getStartName(),
+                                        course.getEndName(),
+                                        course.getLevel(),
+                                        course.getTime()
                                 ))
                                 .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<Mountain> getMountain(Long mnt_id) {
+        return mountainRepository.findById(mnt_id);
     }
 }

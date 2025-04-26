@@ -31,6 +31,11 @@ public class Course {
     @Column(precision = 12, scale = 6)
     private BigDecimal courseLatLng;
 
+    private String startName;
+    private String endName;
+    private String level;
+    private String time;
+
     @OneToMany(mappedBy = "course")
     private List<ReviewPost> reviews;
 }
