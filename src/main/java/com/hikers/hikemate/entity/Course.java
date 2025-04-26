@@ -23,10 +23,10 @@ public class Course {
 
     private String courseFilePath;
 
-    @Column(precision = 10, scale = 5)
+    @Column(precision = 12, scale = 6)
     private BigDecimal courseLastLat;
 
-    @Column(precision = 10, scale = 5)
+    @Column(precision = 12, scale = 6)
     private BigDecimal courseLatLng;
 
     @OneToMany(mappedBy = "course")

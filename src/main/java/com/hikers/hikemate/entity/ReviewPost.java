@@ -2,12 +2,21 @@ package com.hikers.hikemate.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@Table(name ="review_post")
 public class ReviewPost {
+
+    //[User] ---writes---> [ReviewPost] ---belongs to---> [Course] ---belongs to---> [Mountain]
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
