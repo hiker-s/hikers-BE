@@ -1,6 +1,12 @@
 package com.hikers.hikemate.service;
 
+import com.hikers.hikemate.dto.UserIdNickNameDto;
+import com.hikers.hikemate.dto.course.CourseDetailDto;
+import com.hikers.hikemate.dto.mountain.MountainGetAllResponseDto;
+import com.hikers.hikemate.dto.scrap.ScrapDTO;
+import com.hikers.hikemate.dto.scrap.ScrapsByUserDTO;
 import com.hikers.hikemate.entity.Course;
+import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.entity.Scrap;
 import com.hikers.hikemate.entity.User;
 import com.hikers.hikemate.repository.ScrapRepository;
@@ -8,7 +14,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +47,29 @@ public class ScrapService {
         }
 
         scrapRepository.delete(scrap.get());
+    }
+
+    @Transactional
+    public ScrapsByUserDTO getScrapByUser(User user) {
+        List<Scrap> scraps = scrapRepository.findByUser(user);
+        UserIdNickNameDto userDto = new UserIdNickNameDto(user.getUserId(), user.getNickname());
+
+        List<ScrapDTO> scrapDTOList = scraps.stream()
+                .map(scrap -> new ScrapDTO(
+                        scrap.getId(),
+                        new CourseDetailDto(
+                                scrap.getCourse().getId(),
+                                scrap.getCourse().getCourseFilePath(),
+                                scrap.getCourse().getCourseName(),
+                                scrap.getCourse().getStartName(),
+                                scrap.getCourse().getEndName(),
+                                scrap.getCourse().getLevel(),
+                                scrap.getCourse().getTime()
+                        )
+                ))
+                .collect(Collectors.toList());
+
+        return new ScrapsByUserDTO(userDto, scrapDTOList);
+
     }
 }
