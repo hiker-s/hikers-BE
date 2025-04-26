@@ -4,6 +4,8 @@ package com.hikers.hikemate.controller;
 import com.hikers.hikemate.dto.CrewPostDetailResponseDTO;
 import com.hikers.hikemate.dto.CrewPostRequestDTO;
 import com.hikers.hikemate.dto.CrewPostResponseDTO;
+import com.hikers.hikemate.dto.base.ErrorResponseDTO;
+import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.entity.CrewPost;
 import com.hikers.hikemate.entity.Image;
 import com.hikers.hikemate.entity.User;
@@ -195,6 +197,30 @@ public class CrewPostController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseDTOs);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCrewPost(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("id") Long postId
+    ) {
+        if (!token.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO(400, "유효하지 않은 토큰 형식입니다."));
+        }
+
+        String userId = JwtUtil.extractUserId(token.substring(7).trim());
+        User user = userService.findUserByUserId(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponseDTO(404, "사용자를 찾을 수 없습니다."));
+        }
+
+        try {
+            // 서비스에 삭제 위임
+            crewPostService.deleteCrewPost(postId, user);
+            // 응답 메시지와 함께 200 OK 상태 코드 반환
+            return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponseDTO<>(200, "게시물이 성공적으로 삭제되었습니다.", null));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseDTO(403, "삭제 권한이 없습니다."));
+        }
     }
 
 
