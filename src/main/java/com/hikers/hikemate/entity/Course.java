@@ -23,6 +23,8 @@ public class Course {
 
     private String courseFilePath;
 
+    private String courseName;
+
     @Column(precision = 12, scale = 6)
     private BigDecimal courseLastLat;
 
