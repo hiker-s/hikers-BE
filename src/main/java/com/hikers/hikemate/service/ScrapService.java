@@ -2,11 +2,9 @@ package com.hikers.hikemate.service;
 
 import com.hikers.hikemate.dto.UserIdNickNameDto;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
-import com.hikers.hikemate.dto.mountain.MountainGetAllResponseDto;
 import com.hikers.hikemate.dto.scrap.ScrapDTO;
 import com.hikers.hikemate.dto.scrap.ScrapsByUserDTO;
 import com.hikers.hikemate.entity.Course;
-import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.entity.Scrap;
 import com.hikers.hikemate.entity.User;
 import com.hikers.hikemate.repository.ScrapRepository;

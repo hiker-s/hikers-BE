@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MountainGetAllResponseDto {
+public class MountainDto {
     private Long id;
     private String mntName;
     private String mntInfo;
