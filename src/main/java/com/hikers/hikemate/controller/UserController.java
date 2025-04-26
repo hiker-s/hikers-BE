@@ -5,6 +5,8 @@ import com.hikers.hikemate.dto.LoginRequestDTO;
 import com.hikers.hikemate.dto.LoginResponseDTO;
 import com.hikers.hikemate.dto.SignupResponseDTO;
 import com.hikers.hikemate.dto.UserSignupDTO;
+import com.hikers.hikemate.dto.base.ErrorResponseDTO;
+import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.entity.User;
 import com.hikers.hikemate.jwt.JwtUtil;
 import com.hikers.hikemate.service.UserService;
@@ -116,5 +118,30 @@ public class UserController {
         }
 
     }
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponseDTO(401, "유효하지 않은 토큰입니다."));
+        }
+        String userId = jwtUtil.extractUserId(token.substring(7).trim());
+
+        User user = userService.findUserByUserId(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponseDTO(404, "사용자를 찾을 수 없습니다."));
+        }
+
+        Map<String, String> profile = Map.of(
+                "userId", user.getUserId(),
+                "nickname", user.getNickname()
+        );
+
+        return ResponseEntity.ok(
+                new SuccessResponseDTO<>(200, "프로필 정보를 불러오는데 성공했습니다.", profile)
+        );
+    }
+
+
 
 }

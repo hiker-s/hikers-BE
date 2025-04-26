@@ -252,5 +252,30 @@ public class ReviewPostService {
         return likeRepository.countByReviewPost(post);
     }
 
+    // 내가 작성한 리뷰 목록 가져오기
+    public List<ReviewPostResponseDTO> getMyWrittenReviewPosts(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        List<ReviewPost> reviewPosts = reviewPostRepository.findByAuthor(user);
+
+        return reviewPosts.stream()
+                .map(post -> toResponseDTO(post, userId))
+                .collect(Collectors.toList());
+    }
+
+    // 좋아요 누른 리뷰 목록 가져오기
+    public List<ReviewPostResponseDTO> getLikedReviewPosts(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        List<Like> likes = likeRepository.findByUser(user);
+
+        return likes.stream()
+                .map(like -> toResponseDTO(like.getReviewPost(), userId))
+                .collect(Collectors.toList());
+    }
+
+
 
 }
