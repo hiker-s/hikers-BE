@@ -11,7 +11,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public Course findCourseById(Long courseId) {
+    public Course findCourseById(Integer courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("코스를 찾을 수 없습니다."));
     }
