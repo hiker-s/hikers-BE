@@ -2,6 +2,8 @@ package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
+import com.hikers.hikemate.dto.course.CourseFilePathDTO;
+import com.hikers.hikemate.dto.mountain.MountainCourseDTO;
 import com.hikers.hikemate.dto.mountain.MountainDto;
 import com.hikers.hikemate.dto.mountain.MountainNameDTO;
 import com.hikers.hikemate.entity.Mountain;
@@ -27,8 +29,27 @@ public class MountainController {
     @GetMapping("/list")
     public ResponseEntity<?> mountainGetAll() {
         List<MountainDto> mountainList = mountainService.getAllMountains();
-        SuccessResponseDTO<List<MountainDto>> response =
-                new SuccessResponseDTO<>(200, "산 리스트 조회 성공", mountainList);
+
+        List<MountainCourseDTO> mountainDtos = mountainList.stream()
+                .map(mountain -> new MountainCourseDTO(
+                        mountain.getId(),
+                        mountain.getMntName(),
+                        mountain.getViewCount(),
+                        mountain.getCourses().stream()
+                                .map(course -> new CourseFilePathDTO(
+                                        course.getId(),
+                                        course.getMountainId(),
+                                        course.getCourseFilePath()
+                                )).toList()
+                ))
+                .toList();
+
+        SuccessResponseDTO<List<MountainCourseDTO>> response =
+                new SuccessResponseDTO<>(
+                        200,
+                        "산 리스트 조회 성공",
+                        mountainDtos
+                );
 
         return ResponseEntity.ok(response);
     }
