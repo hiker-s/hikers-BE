@@ -36,6 +36,7 @@ public class MountainService {
                 mountain.getId(),
                 mountain.getMntName(),
                 mountain.getMntInfo(),
+                mountain.getViewCount(),
                 mountain.getCourses().stream()
                         .map(course -> new CourseDetailDto(
                                 course.getId(),
@@ -47,6 +48,6 @@ public class MountainService {
                                 course.getTime()
                         ))
                         .collect(Collectors.toList())
-                );
+        );
     }
 }
