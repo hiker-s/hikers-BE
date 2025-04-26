@@ -2,6 +2,7 @@ package com.hikers.hikemate.service;
 
 import com.hikers.hikemate.entity.CrewPost;
 import com.hikers.hikemate.entity.Image;
+import com.hikers.hikemate.entity.ReviewPost;
 import com.hikers.hikemate.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,4 +48,15 @@ public class ImageService {
         post.getImages().clear();
 
     }
+
+    public void deleteImagesByPost(ReviewPost post) {
+        for (Image image : post.getImages()) {
+            s3Service.deleteImage(image.getImageUrl());  // S3에서 이미지 삭제
+
+        }
+        imageRepository.deleteAll(post.getImages());
+        post.getImages().clear();
+
+    }
+
 }

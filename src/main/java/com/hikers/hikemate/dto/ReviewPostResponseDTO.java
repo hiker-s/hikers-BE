@@ -29,6 +29,9 @@ public class ReviewPostResponseDTO {
     private List<String> imageUrls;
     private boolean isWriter;
 
+    private int likeCount;
+    private boolean likedByCurrentUser;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 }
