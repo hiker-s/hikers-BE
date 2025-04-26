@@ -1,6 +1,7 @@
 package com.hikers.hikemate.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class ReviewPostResponseDTO {
     private String courseName;
     private String mountainName;
     private List<String> imageUrls;
+    @JsonProperty("is_writer")
     private boolean isWriter;
 
     private int likeCount;

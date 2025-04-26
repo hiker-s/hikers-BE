@@ -55,28 +55,28 @@ public class CrewPostService {
         CrewPost crewPost = CrewPost.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
-                .author(user)  // 작성자 정보 설정
+                .author(user)
                 .build();
 
         List<Image> imageList = new ArrayList<>(); // 이미지 목록을 저장할 리스트
         for (MultipartFile file : request.getImages()) {
             try {
-                // S3에 파일 업로드 후 URL 반환
+
                 String imageUrl = s3Service.uploadImage(file); // 이미지 업로드
 
-                // Image 엔티티 생성
+
                 Image image = new Image();
                 image.setImageUrl(imageUrl);
                 image.setCrewPost(crewPost);
                 imageList.add(image); // 이미지 리스트에 추가
             } catch (IOException e) {
-                throw new RuntimeException("이미지 업로드 중 오류가 발생했습니다.", e); // 예외 처리
+                throw new RuntimeException("이미지 업로드 중 오류가 발생했습니다.", e);
             }
         }
 
         crewPost.setImages(imageList);
 
-        // CrewPost 저장
+
         return crewPostRepository.save(crewPost);
     }
 
@@ -86,7 +86,7 @@ public class CrewPostService {
         Optional<CrewPost> crewPostOptional = crewPostRepository.findById(id);
 
         if (crewPostOptional.isPresent()) {
-            return crewPostOptional.get();  // 게시물이 존재하면 반환
+            return crewPostOptional.get();
         } else {
 
             throw new IllegalArgumentException("게시물을 찾을 수 없습니다.");
@@ -114,7 +114,7 @@ public class CrewPostService {
         List<Image> saved = imageService.saveImages(dto.getImages(), post);
         post.setImages(saved);
 
-        // 5) 본문·제목 덮어쓰기
+        // 5) 본문+제목 덮어쓰기
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
 
@@ -122,10 +122,28 @@ public class CrewPostService {
         return crewPostRepository.save(post);
     }
 
-    //마지막 목록
+
     public List<CrewPost> getAllCrewPosts() {
         return crewPostRepository.findAll();
     }
+
+    @Transactional
+    public void deleteCrewPost(Long postId, User user) {
+        CrewPost post = crewPostRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+
+
+        if (!post.getAuthor().getId().equals(user.getId())) {
+            throw new RuntimeException("삭제 권한이 없습니다.");
+        }
+
+
+        imageService.deleteImagesByPost(post);
+
+
+        crewPostRepository.delete(post);
+    }
+
 
 
 
