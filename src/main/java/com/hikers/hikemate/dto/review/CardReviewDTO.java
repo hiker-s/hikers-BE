@@ -1,9 +1,6 @@
 package com.hikers.hikemate.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.Null;
 import lombok.*;
 
 @Getter
@@ -11,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReviewCardDTO {
+public class CardReviewDTO {
     private int id;
     private String title;
     private String level;
