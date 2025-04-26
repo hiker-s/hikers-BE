@@ -1,9 +1,15 @@
 package com.hikers.hikemate.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+@Entity
+@Getter
+@Setter
 public class Course {
 
     @Id
@@ -22,4 +28,7 @@ public class Course {
 
     @Column(precision = 10, scale = 5)
     private BigDecimal courseLatLng;
+
+    @OneToMany(mappedBy = "course")
+    private List<ReviewPost> reviews;
 }

@@ -1,20 +1,24 @@
 package com.hikers.hikemate.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class ReviewPost {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "review_id")
+    @Column(name = "reviewId")
     private int id;
 
 
     private String title;
 
+    @Column(nullable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
 
@@ -31,10 +35,16 @@ public class ReviewPost {
 
     //코스와의 연관관계 > 여기서 해당 하는 코스를 입력하면 자동으로 산으로까지 이어질텐데 굳이 필요한가?
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private String course;
+    @JoinColumn(name = "courseId")
+    private Course course;
 
     private String level;
 
-    private int likedCnt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    // like entity 만들고 나서 작성
+    // private int likedCnt;
 }

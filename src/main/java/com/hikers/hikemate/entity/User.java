@@ -41,4 +41,8 @@ public class User {
 
     //추후 도장 개발시 도장에 대한 list 객체 추가 필요
 
+    //리뷰와의 연결 필요
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewPost> reviewPosts;
+
 }
