@@ -32,7 +32,6 @@ public class ImageService {
             } catch (IOException e) {
                 // 예외 처리: 로깅 또는 적절한 오류 메시지 출력
                 e.printStackTrace();
-                // 예외 처리 후 적절한 조치를 취할 수 있음 (예: 예외를 던지거나, 오류 메시지 반환)
             }
         }
 
