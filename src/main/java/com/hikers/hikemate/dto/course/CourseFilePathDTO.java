@@ -9,5 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CourseFilePathDTO {
     private int id;
+    private Long mountainId;
     private String courseFilePath;
 }
