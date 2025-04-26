@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ScrapService {
@@ -26,5 +28,16 @@ public class ScrapService {
         scrapRepository.save(scrap);
 
         return scrap;
+    }
+
+    @Transactional
+    public void deleteScrap(User user, Course course) {
+        Optional<Scrap> scrap = scrapRepository.findByUserAndCourse(user, course);
+
+        if (!scrap.isPresent()) {
+            throw new IllegalStateException("스크랩하지 않은 코스입니다.");
+        }
+
+        scrapRepository.delete(scrap.get());
     }
 }
