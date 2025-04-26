@@ -19,4 +19,5 @@ public class Mountain {
     @OneToMany(mappedBy = "mountain")
     private List<Course> courses;
 
+
 }
