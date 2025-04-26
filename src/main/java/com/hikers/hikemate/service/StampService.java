@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,11 +31,11 @@ public class StampService {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 코스 정보 조회
-        Course course = courseRepository.findById((long)courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
-
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
         // 코스의 목표 지점 위경도 정보
         BigDecimal courseLat = course.getCourseLastLat();
-        BigDecimal courseLng = course.getCourseLatLng();
+        BigDecimal courseLng = course.getCourseLastLng();
+
 
         // 사용자 위치가 코스와 가까운지 확인
         if (isWithinRange(new BigDecimal(userLat), new BigDecimal(userLng), courseLat, courseLng)) {
@@ -46,6 +47,7 @@ public class StampService {
             stamp.setUser(user);
             stamp.setCourse(course);
             stamp.setLevelWeight(levelWeight);
+            stamp.setStampDate(LocalDate.now()); // 현재 날짜 설정
 
             // Stamp 저장 후 반환
             return stampRepository.save(stamp);
@@ -54,8 +56,12 @@ public class StampService {
         }
     }
 
-
     private boolean isWithinRange(BigDecimal userLat, BigDecimal userLng, BigDecimal courseLat, BigDecimal courseLng) {
+        // courseLng가 null인지 확인
+        if (courseLat == null || courseLng == null) {
+            throw new IllegalArgumentException("Course latitude or longitude is missing.");
+        }
+
         // 위경도 차이를 GeoUtil을 사용하여 거리로 변환
         double distance = GeoUtil.calculateDistance(userLat.doubleValue(), userLng.doubleValue(),
                 courseLat.doubleValue(), courseLng.doubleValue());
@@ -76,11 +82,26 @@ public class StampService {
                 throw new IllegalArgumentException("Invalid course level");
         }
     }
+
     public List<Stamp> getStampsByUser(String userId) {
         // 사용자 정보 조회
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // 사용자에 해당하는 스탬프 목록 반환
         return stampRepository.findByUser(user);
+    }
+
+    public List<Stamp> getStampsByCourse(Integer courseId) {
+        // 코스 정보 조회
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        // 해당 코스에 대한 스탬프 목록 반환
+        return stampRepository.findByCourse(course);
+    }
+
+    public List<Stamp> getStampsByCourseAndDate(Integer courseId, LocalDate date) {
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
+        // 해당 날짜에 인증된 스탬프 목록 반환
+        return stampRepository.findByCourseAndStampDate(course, date);
     }
 }

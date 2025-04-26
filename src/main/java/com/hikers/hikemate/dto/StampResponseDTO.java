@@ -21,7 +21,7 @@ public class StampResponseDTO {
                 stamp.getId(),
                 stamp.getCourse().getCourseName(),
                 stamp.getCourse().getCourseLastLat(),
-                stamp.getCourse().getCourseLatLng(),
+                stamp.getCourse().getCourseLastLng(),
                 stamp.getLevelWeight()
         );
     }

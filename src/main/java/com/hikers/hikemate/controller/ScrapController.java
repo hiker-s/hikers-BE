@@ -31,7 +31,7 @@ public class ScrapController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> scrapPost(
             @RequestHeader("Authorization") String token,
-            @RequestParam("course_id") Long course_id
+            @RequestParam("course_id") Integer course_id
     ) {
         try {
             User user = jwtUtil.getUserFromToken(token);
@@ -57,7 +57,7 @@ public class ScrapController {
     @DeleteMapping(produces = "application/json")
     public ResponseEntity<?> scrapDelete(
             @RequestHeader("Authorization") String token,
-            @RequestParam("course_id") Long course_id
+            @RequestParam("course_id") Integer course_id
     ) {
         try {
             User user = jwtUtil.getUserFromToken(token);

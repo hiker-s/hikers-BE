@@ -18,7 +18,7 @@ public class ReviewPostRequestDTO {
     private String content;
     private List<MultipartFile> images;
     private String level;
-    private Long courseId;
+    private Integer courseId;
 
     public List<MultipartFile> getImages() {
         return Optional.ofNullable(images).orElse(new ArrayList<>());

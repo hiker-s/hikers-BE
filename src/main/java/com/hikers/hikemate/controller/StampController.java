@@ -24,16 +24,22 @@ public class StampController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/authenticate")
+    @PostMapping("/authenticate/{courseId}/{userLat}/{userLng}")
     public ResponseEntity<?> authenticateUserLocation(
             @RequestHeader("Authorization") String token,  // 헤더에서 토큰 추출
-            @RequestParam int courseId,
-            @RequestParam double userLat,
-            @RequestParam double userLng) {
+            @PathVariable int courseId,
+            @PathVariable double userLat,
+            @PathVariable double userLng) {
 
         try {
+            if (token == null || !token.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponseDTO(400, "유효하지 않은 토큰입니다."));
+            }
+
             // JWT 토큰에서 userId 추출
-            String userId = jwtUtil.extractUserId(token);
+            String userId = jwtUtil.extractUserId(token.substring(7).trim());
+            System.out.println("Extracted User ID: " + userId);
 
             // 인증 로직 수행
             stampService.authenticateUserLocation(userId, courseId, userLat, userLng);
@@ -44,14 +50,17 @@ public class StampController {
 
         } catch (IllegalArgumentException ex) {
             // 인증 실패 시 에러 메시지 반환
+            System.out.println("인증 오류: " + ex.getMessage());
             ErrorResponseDTO errorResponse = new ErrorResponseDTO(400, "인증 실패");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception ex) {
             // 일반적인 예외 처리
+            ex.printStackTrace();  // 스택 트레이스를 출력하여 디버깅
             ErrorResponseDTO errorResponse = new ErrorResponseDTO(500, "서버 오류가 발생했습니다.");
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/mine")
     public ResponseEntity<?> getMyStamps(@RequestHeader("Authorization") String token) {
         try {

@@ -29,7 +29,7 @@ public class Course {
     private BigDecimal courseLastLat;
 
     @Column(precision = 12, scale = 6)
-    private BigDecimal courseLatLng;
+    private BigDecimal courseLastLng;
 
     private String startName;
     private String endName;

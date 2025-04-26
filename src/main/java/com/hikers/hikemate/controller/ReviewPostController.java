@@ -42,7 +42,7 @@ public class ReviewPostController {
                                               @RequestParam("title") String title,
                                               @RequestParam("content") String content,
                                               @RequestParam("level") String level,
-                                              @RequestParam("courseId") Long courseId,
+                                              @RequestParam("courseId") Integer courseId,
                                               @RequestParam(value = "images", required = false) List<MultipartFile> images){
 
 
