@@ -22,5 +22,8 @@ public class Image {
     private CrewPost crewPost;
 
     //review와의 연관관계 추가
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "revew_post_id")
+    private ReviewPost reviewPost;
 
 }
