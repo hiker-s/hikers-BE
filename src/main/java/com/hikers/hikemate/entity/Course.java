@@ -1,9 +1,6 @@
 package com.hikers.hikemate.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -11,8 +8,12 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="courseID")
+    @Column(name="courseId")
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "mntId")
+    private Mountain mountain;
 
     private String courseFilePath;
 
