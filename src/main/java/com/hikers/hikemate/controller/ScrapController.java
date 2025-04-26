@@ -118,7 +118,8 @@ public class ScrapController {
                 course.getStartName(),
                 course.getEndName(),
                 course.getLevel(),
-                course.getTime()
+                course.getTime(),
+                course.getMountain().getId()
         );
         ScrapDTO scrapDTO = new ScrapDTO(scrap.getId(), courseDto);
 

@@ -62,7 +62,8 @@ public class ScrapService {
                                 scrap.getCourse().getStartName(),
                                 scrap.getCourse().getEndName(),
                                 scrap.getCourse().getLevel(),
-                                scrap.getCourse().getTime()
+                                scrap.getCourse().getTime(),
+                                scrap.getCourse().getMountain().getId()
                         )
                 ))
                 .collect(Collectors.toList());

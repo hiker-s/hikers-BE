@@ -45,7 +45,8 @@ public class MountainService {
                                 course.getStartName(),
                                 course.getEndName(),
                                 course.getLevel(),
-                                course.getTime()
+                                course.getTime(),
+                                course.getMountain().getId()
                         ))
                         .collect(Collectors.toList())
         );

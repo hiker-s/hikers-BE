@@ -16,6 +16,7 @@ public class CourseDetailDto {
     private String endName;
     private String level;
     private String time;
+    private Long mountainId;
 }
 
 
