@@ -1,7 +1,9 @@
 package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
+import com.hikers.hikemate.dto.course.CourseDetailDto;
 import com.hikers.hikemate.dto.mountain.MountainDto;
+import com.hikers.hikemate.dto.mountain.MountainNameDTO;
 import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.repository.MountainRepository;
 import com.hikers.hikemate.service.MountainService;
@@ -44,6 +46,24 @@ public class MountainController {
 
         SuccessResponseDTO<MountainDto> response =
                 new SuccessResponseDTO<>(200, "산 상세 조회 성공", mountainDto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<?> mountainGetRank() {
+        List<Mountain> mountains = mountainRepository.findAllByOrderByViewCountDesc();
+
+        List<MountainNameDTO> mountainDtos = mountains.stream()
+                .map(mountain -> new MountainNameDTO(
+                        mountain.getId(),
+                        mountain.getMntName(),
+                        mountain.getViewCount()
+                ))
+                .toList();
+
+        SuccessResponseDTO<List<MountainNameDTO>> response =
+                new SuccessResponseDTO<>(200, "산 랭킹 조회 성공", mountainDtos);
 
         return ResponseEntity.ok(response);
     }
