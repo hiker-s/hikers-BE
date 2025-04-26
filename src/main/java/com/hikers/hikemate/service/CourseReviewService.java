@@ -17,31 +17,27 @@ public class CourseReviewService {
 
     private final ReviewPostRepository reviewPostRepository;
 
-    public List<ReviewCardDTO> getReviewListByCourse(String sortType, String currentUserId) {
+    public List<ReviewCardDTO> getReviewListByCourse(String sortType, String currentUserId, Long courseId) {
         List<ReviewPost> reviewPosts;
 
-        // 정렬 기준에 따라 게시물 목록 가져오기
         if ("latest".equals(sortType)) {
-            reviewPosts = reviewPostRepository.findAllByOrderByCreatedAtDesc();  // 최신순
+            reviewPosts = reviewPostRepository.findByCourseIdOrderByCreatedAtDesc(courseId);
         } else if ("likes".equals(sortType)) {
-            reviewPosts = reviewPostRepository.findAllByOrderByLikesDesc();  // 좋아요 많은 순
+            reviewPosts = reviewPostRepository.findByCourseIdOrderByLikesDesc(courseId);
         } else {
             throw new IllegalArgumentException("정렬 타입이 잘못되었습니다.");
         }
 
         return reviewPosts.stream()
                 .map(post -> {
-
                     boolean likedByCurrentUser = post.getLikes().stream()
                             .anyMatch(like -> like.getUser().getUserId().equals(currentUserId));
-
 
                     List<String> imageUrls = post.getImages().stream()
                             .map(image -> image.getImageUrl())
                             .collect(Collectors.toList());
 
-
-                    ReviewCardDTO dto = ReviewCardDTO.builder()
+                    return ReviewCardDTO.builder()
                             .id(post.getId())
                             .title(post.getTitle())
                             .description(post.getContent())
@@ -49,7 +45,6 @@ public class CourseReviewService {
                             .imgUrl(imageUrls.isEmpty() ? null : imageUrls.get(0))
                             .isLiked(likedByCurrentUser)
                             .build();
-                    return dto;
                 })
                 .collect(Collectors.toList());
     }

@@ -31,7 +31,7 @@ public class CourseReviewController {
     ) {
         try {
             User user = jwtUtil.getUserFromToken(token);
-            List<ReviewCardDTO> reviewPostList = courseReviewService.getReviewListByCourse(sortType, user.getUserId());
+            List<ReviewCardDTO> reviewPostList = courseReviewService.getReviewListByCourse(sortType, user.getUserId(), course_id);
 
             return ResponseEntity.status(HttpStatus.OK).body(reviewPostList);
 
