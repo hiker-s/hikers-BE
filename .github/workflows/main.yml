@@ -32,14 +32,45 @@ jobs:
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    
+
     - name: Build with Gradle
       run: ./gradlew clean build
-      env:
-        DB_URL: ${{ secrets.DB_URL }}
-        DB_USERNAME: ${{ secrets.DB_USERNAME }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        S3_NAME: ${{ secrets.S3_NAME }}
-        S3_ACCESSKEY: ${{ secrets.S3_ACCESSKEY }}
-        S3_SECRETKEY: ${{ secrets.S3_SECRETKEY }}
+
+    - name: Make Directory
+      run: mkdir -p deploy
+
+    - name: Copy Jar
+      run: cp ./build/libs/*.jar ./deploy
+
+    - name: Make zip file
+      run: zip -r ./coinTalk.zip ./deploy
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.S3_ACCESSKEY }}
+        aws-secret-access-key: ${{ secrets.S3_SECRETKEY }}
+        aws-region: ap-northeast-2
+
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./coinTalk.zip s3://$S3_BUCKET_NAME/
+
+    # - name: Setup MySQL
+    #     uses: wesql/mysql-branch-action@v0.0.7
+    #     with:
+    #       character set server: 'utf8' 
+    #       mysql database: "hikers-database"
+    #       mysql user:  ${{ secrets.DB_USERNAME }}
+    #       mysql password:  ${{ secrets.DB_PASSWORD }}
+    
+    # - name: Build with Gradle
+    #   run: ./gradlew clean build
+    #   env:
+    #     DB_URL: ${{ secrets.DB_URL }}
+    #     DB_USERNAME: ${{ secrets.DB_USERNAME }}
+    #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #     S3_NAME: ${{ secrets.S3_NAME }}
+    #     S3_ACCESSKEY: ${{ secrets.S3_ACCESSKEY }}
+    #     S3_SECRETKEY: ${{ secrets.S3_SECRETKEY }}
 
