@@ -21,5 +21,6 @@ public class Image {
     @JoinColumn(name = "crew_post_id")
     private CrewPost crewPost;
 
+    //review와의 연관관계 추가
 
 }
