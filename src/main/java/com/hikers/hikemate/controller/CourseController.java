@@ -39,7 +39,6 @@ public class CourseController {
                         case "level" -> "난이도순으로 정렬된 코스 조회에 성공하였습니다.";
                         case "review" -> "리뷰순으로 정렬된 코스 조회에 성공하였습니다.";
                         case "scrap" -> "스크랩순으로 정렬된 코스 조회에 성공하였습니다.";
-                        case "likes" -> "좋아요순으로 정렬된 코스 조회에 성공하였습니다.";
                         default -> "가나다순으로 정렬된 코스 조회에 성공하였습니다.";
                     },
                     courseDetailDtoList
