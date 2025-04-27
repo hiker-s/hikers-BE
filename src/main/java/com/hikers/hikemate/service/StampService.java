@@ -58,22 +58,26 @@ public class StampService {
             // Stamp 저장 후 반환
             return stampRepository.save(stamp);
         } else {
-            throw new IllegalArgumentException("인증에 실패하였습니다. 정확한 위치로 가서 다시 인증해주세요.");
+            throw new IllegalArgumentException("인증에 실패하였습니다. 목표지점 50m 이내로 이동하여 다시 인증해주세요.");
         }
     }
 
     private boolean isWithinRange(BigDecimal userLat, BigDecimal userLng, BigDecimal courseLat, BigDecimal courseLng) {
-        // courseLng가 null인지 확인
         if (courseLat == null || courseLng == null) {
-            throw new IllegalArgumentException("Course latitude or longitude is missing.");
+            throw new IllegalArgumentException("목표 지점 50m 이내로 이동해 주세요.");
         }
 
-        // 위경도 차이를 GeoUtil을 사용하여 거리로 변환
         double distance = GeoUtil.calculateDistance(userLat.doubleValue(), userLng.doubleValue(),
                 courseLat.doubleValue(), courseLng.doubleValue());
 
-        // 50m 이내이면 인증이 가능
-        return distance <= 50;  // 50m 이내
+        // 거리 출력
+        System.out.println("Calculated Distance: " + distance);
+
+        if (distance > 50) {
+            throw new IllegalArgumentException("인증에 실패하였습니다. 목표지점 50m 이내로 이동하여 다시 인증해주세요.");
+        }
+
+        return true;  // 50m 이내로 인증이 가능
     }
 
     private int calculateLevelWeight(String level) {
