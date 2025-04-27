@@ -36,6 +36,12 @@ public class StampService {
         BigDecimal courseLat = course.getCourseLastLat();
         BigDecimal courseLng = course.getCourseLastLng();
 
+        //사용자가 하루에 같은 코스는 한번만 인증받도록 검층 로직 추가
+        LocalDate today = LocalDate.now();
+        boolean alreadyStamped = stampRepository.existsByUserAndCourseAndStampDate(user,course,today);
+        if(alreadyStamped){
+            throw new IllegalArgumentException("오늘은 이미 이 코스에서 인증을 완료했습니다.");
+        }
 
         // 사용자 위치가 코스와 가까운지 확인
         if (isWithinRange(new BigDecimal(userLat), new BigDecimal(userLng), courseLat, courseLng)) {
