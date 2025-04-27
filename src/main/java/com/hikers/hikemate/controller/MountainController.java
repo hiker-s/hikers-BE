@@ -6,6 +6,7 @@ import com.hikers.hikemate.dto.course.CourseFilePathDTO;
 import com.hikers.hikemate.dto.mountain.MountainCourseDTO;
 import com.hikers.hikemate.dto.mountain.MountainDto;
 import com.hikers.hikemate.dto.mountain.MountainNameDTO;
+import com.hikers.hikemate.dto.mountain.MountainRankDTO;
 import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.repository.MountainRepository;
 import com.hikers.hikemate.service.MountainService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,15 +77,20 @@ public class MountainController {
     public ResponseEntity<?> mountainGetRank() {
         List<Mountain> mountains = mountainRepository.findAllByOrderByViewCountDesc();
 
-        List<MountainNameDTO> mountainDtos = mountains.stream()
-                .map(mountain -> new MountainNameDTO(
-                        mountain.getId(),
-                        mountain.getMntName(),
-                        mountain.getViewCount()
-                ))
+        // 5등까지만 처리
+        List<MountainRankDTO> mountainDtos = IntStream.range(0, Math.min(mountains.size(), 5))
+                .mapToObj(index -> {
+                    Mountain mountain = mountains.get(index);
+                    return new MountainRankDTO(
+                            mountain.getId(),
+                            index + 1,  // 랭킹을 1부터 시작하도록 설정
+                            mountain.getMntName(),
+                            mountain.getViewCount()
+                    );
+                })
                 .toList();
 
-        SuccessResponseDTO<List<MountainNameDTO>> response =
+        SuccessResponseDTO<List<MountainRankDTO>> response =
                 new SuccessResponseDTO<>(200, "산 랭킹 조회 성공", mountainDtos);
 
         return ResponseEntity.ok(response);
