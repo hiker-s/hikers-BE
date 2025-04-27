@@ -12,9 +12,10 @@ public class WebMvcController implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 모든 경로에 대해
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .allowedOriginPatterns("*")
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SECS);
     }
