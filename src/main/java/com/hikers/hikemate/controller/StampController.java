@@ -25,6 +25,7 @@ public class StampController {
     @Autowired
     private JwtUtil jwtUtil;
 
+
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticateUserLocation(
             @RequestHeader("Authorization") String token,
