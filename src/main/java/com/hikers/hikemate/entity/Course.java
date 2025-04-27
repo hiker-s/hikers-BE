@@ -38,4 +38,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<ReviewPost> reviews;
+
+    @OneToMany(mappedBy = "course")
+    private List<Scrap> scraps;
 }
