@@ -28,7 +28,7 @@ public class CrewPostResponseDTO {
         this.imageUrls = imageUrls;
 
         // createdAt을 원하는 형식으로 포맷
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         this.createdAt = createdAt.format(formatter);
     }
 
