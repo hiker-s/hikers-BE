@@ -253,11 +253,17 @@ public class ReviewPostService {
     }
 
     // 내가 작성한 리뷰 목록 가져오기
-    public List<ReviewPostResponseDTO> getMyWrittenReviewPosts(String userId) {
+    public List<ReviewPostResponseDTO> getMyWrittenReviewPosts(String userId, String sortType) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        List<ReviewPost> reviewPosts = reviewPostRepository.findByAuthor(user);
+        List<ReviewPost> reviewPosts;
+
+        if ("likes".equals(sortType)) {
+            reviewPosts = reviewPostRepository.findByAuthorOrderByLikesDesc(user);
+        } else {
+            reviewPosts = reviewPostRepository.findByAuthorOrderByCreatedAtDesc(user);
+        }
 
         return reviewPosts.stream()
                 .map(post -> toResponseDTO(post, userId))

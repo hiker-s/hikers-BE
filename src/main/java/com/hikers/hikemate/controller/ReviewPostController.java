@@ -237,14 +237,15 @@ public class ReviewPostController {
     }
 
     @GetMapping("/mine")
-    public ResponseEntity<?> getMyWrittenReviewPosts(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getMyWrittenReviewPosts( @RequestHeader("Authorization") String token,
+                                                      @RequestParam(value = "sortType", defaultValue = "latest") String sortType) {
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponseDTO(400, "유효하지 않은 토큰입니다."));
         }
         String userId = jwtUtil.extractUserId(token.substring(7).trim());
 
-        List<ReviewPostResponseDTO> myPosts = reviewPostService.getMyWrittenReviewPosts(userId);
+        List<ReviewPostResponseDTO> myPosts = reviewPostService.getMyWrittenReviewPosts(userId, sortType);
 
         SuccessResponseDTO<List<ReviewPostResponseDTO>> response =
                 new SuccessResponseDTO<>(200, "내가 작성한 리뷰 항목을 불러오는데 성공하였습니다.", myPosts);
