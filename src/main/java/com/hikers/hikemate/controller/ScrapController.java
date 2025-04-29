@@ -1,5 +1,6 @@
 package com.hikers.hikemate.controller;
 
+import com.hikers.hikemate.common.ScrapSortType;
 import com.hikers.hikemate.dto.UserIdNickNameDto;
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
@@ -78,7 +79,7 @@ public class ScrapController {
         }
     }
 
-    @GetMapping(value="user", produces = "application/json")
+    /*@GetMapping(value="user", produces = "application/json")
     public ResponseEntity<?> scrapGetByUser(
             @RequestHeader("Authorization") String token
     ) {
@@ -104,6 +105,30 @@ public class ScrapController {
             return ResponseEntity.status(401).body(new ErrorResponseDTO(401, e.getMessage()));
         } catch (Exception e) {
             // 알 수 없는 서버 에러
+            return ResponseEntity.status(500).body(new ErrorResponseDTO(500, "서버 내부 오류가 발생했습니다."));
+        }
+    }*/
+
+    @GetMapping(value = "user", produces = "application/json")
+    public ResponseEntity<?> scrapGetByUser(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(defaultValue = "NAME") ScrapSortType sortBy
+    ) {
+        try {
+            User user = jwtUtil.getUserFromToken(token);
+            ScrapsByUserDTO scrapsList = scrapService.getScrapByUser(user, sortBy);
+
+            SuccessResponseDTO<ScrapsByUserDTO> successResponseDTO = new SuccessResponseDTO<>(
+                    200,
+                    "내가 스크랩한 코스 목록 반환에 성공하였습니다.",
+                    scrapsList
+            );
+            return ResponseEntity.ok(successResponseDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(400).body(new ErrorResponseDTO(400, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(401).body(new ErrorResponseDTO(401, e.getMessage()));
+        } catch (Exception e) {
             return ResponseEntity.status(500).body(new ErrorResponseDTO(500, "서버 내부 오류가 발생했습니다."));
         }
     }
