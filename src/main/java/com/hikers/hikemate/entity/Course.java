@@ -10,15 +10,16 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "course")
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="courseId")
+    @Column(name = "course_id")
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "mntId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mnt_id")
     private Mountain mountain;
 
     private String courseFilePath;
