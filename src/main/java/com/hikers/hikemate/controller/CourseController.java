@@ -3,6 +3,7 @@ package com.hikers.hikemate.controller;
 import com.hikers.hikemate.dto.base.ErrorResponseDTO;
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
+import com.hikers.hikemate.dto.course.CourseDetailWithScrapDTO;
 import com.hikers.hikemate.entity.User;
 import com.hikers.hikemate.jwt.JwtUtil;
 import com.hikers.hikemate.service.CourseService;
@@ -29,7 +30,7 @@ public class CourseController {
         try {
             User user = jwtUtil.getUserFromToken(token);
 
-            List<CourseDetailDto> courseDetailDtoList = courseService.getCourseBySort(sortType, mnt_id);
+            List<CourseDetailWithScrapDTO> courseDetailDtoList = courseService.getCourseBySort(sortType, mnt_id, user.getId());
 
 
             return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponseDTO<>(
