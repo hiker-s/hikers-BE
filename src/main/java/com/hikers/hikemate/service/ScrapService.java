@@ -1,6 +1,5 @@
 package com.hikers.hikemate.service;
 
-import com.hikers.hikemate.common.ScrapSortType;
 import com.hikers.hikemate.dto.UserIdNickNameDto;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
 import com.hikers.hikemate.dto.scrap.ScrapDTO;
@@ -74,24 +73,22 @@ public class ScrapService {
     }*/
 
     @Transactional
-    public ScrapsByUserDTO getScrapByUser(User user, ScrapSortType sortBy) {
+    public ScrapsByUserDTO getScrapByUser(User user, String sortBy) {
         List<Scrap> scraps;
 
-        switch (sortBy) {
-            case NAME:
-                scraps = scrapRepository.findByUserOrderByCourseName(user);
-                break;
-            case SCRAP:
-                scraps = scrapRepository.findByUserOrderByScrapCount(user);
-                break;
-            case REVIEW:
-                scraps = scrapRepository.findByUserOrderByReviewCount(user);
-                break;
-            case LEVEL:
-                scraps = scrapRepository.findByUserOrderByLevel(user);
-                break;
-            default:
-                scraps = scrapRepository.findByUser(user); // fallback
+        String sortByCleaned = sortBy.trim().toUpperCase();
+
+
+        if ("NAME".equals(sortByCleaned)) {
+            scraps = scrapRepository.findByUserOrderByCourseName(user);
+        } else if ("SCRAP".equals(sortByCleaned)) {
+            scraps = scrapRepository.findByUserOrderByScrapCount(user);
+        } else if ("REVIEW".equals(sortByCleaned)) {
+            scraps = scrapRepository.findByUserOrderByReviewCount(user);
+        } else if ("LEVEL".equals(sortByCleaned)) {
+            scraps = scrapRepository.findByUserOrderByLevel(user);
+        } else {
+            scraps = scrapRepository.findByUser(user);
         }
 
         UserIdNickNameDto userDto = new UserIdNickNameDto(user.getUserId(), user.getNickname());

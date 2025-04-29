@@ -1,6 +1,5 @@
 package com.hikers.hikemate.controller;
 
-import com.hikers.hikemate.common.ScrapSortType;
 import com.hikers.hikemate.dto.UserIdNickNameDto;
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -79,40 +77,10 @@ public class ScrapController {
         }
     }
 
-    /*@GetMapping(value="user", produces = "application/json")
-    public ResponseEntity<?> scrapGetByUser(
-            @RequestHeader("Authorization") String token
-    ) {
-        try {
-            User user = jwtUtil.getUserFromToken(token);
-            ScrapsByUserDTO scrapsList = scrapService.getScrapByUser(user);
-
-
-            SuccessResponseDTO<ScrapsByUserDTO> successResponseDTO = new SuccessResponseDTO<>(
-                    200,
-                    "내가 스크랩한 코스 목록 반환에 성공하였습니다.",
-                    scrapsList
-            );
-
-
-            return ResponseEntity.ok(successResponseDTO);
-
-        } catch (IllegalStateException e) {
-            // 스크랩 하지 않았을 때 에러
-            return ResponseEntity.status(400).body(new ErrorResponseDTO(400, e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            // 토큰 관련 에러
-            return ResponseEntity.status(401).body(new ErrorResponseDTO(401, e.getMessage()));
-        } catch (Exception e) {
-            // 알 수 없는 서버 에러
-            return ResponseEntity.status(500).body(new ErrorResponseDTO(500, "서버 내부 오류가 발생했습니다."));
-        }
-    }*/
-
     @GetMapping(value = "user", produces = "application/json")
     public ResponseEntity<?> scrapGetByUser(
             @RequestHeader("Authorization") String token,
-            @RequestParam(defaultValue = "NAME") ScrapSortType sortBy
+            @RequestParam(value = "sortType", defaultValue = "NAME") String sortBy
     ) {
         try {
             User user = jwtUtil.getUserFromToken(token);
