@@ -93,7 +93,7 @@ public class ScrapService {
 
         UserIdNickNameDto userDto = new UserIdNickNameDto(user.getUserId(), user.getNickname());
 
-        List<ScrapDTO> scrapDTOList = scraps.stream()
+        /*List<ScrapDTO> scrapDTOList = scraps.stream()
                 .map(scrap -> new ScrapDTO(
                         scrap.getId(),
                         new CourseDetailDto(
@@ -107,6 +107,29 @@ public class ScrapService {
                                 scrap.getCourse().getMountain().getId()
                         )
                 ))
+                .collect(Collectors.toList());*/
+
+        List<ScrapDTO> scrapDTOList = scraps.stream()
+                .map(scrap -> {
+                    // isScrapped 값 설정
+                    boolean isScrapped = scrapRepository.findByUserAndCourse(user, scrap.getCourse()).isPresent();
+
+                    // ScrapDTO 객체 생성
+                    return new ScrapDTO(
+                            scrap.getId(),
+                            new CourseDetailDto(
+                                    scrap.getCourse().getId(),
+                                    scrap.getCourse().getCourseFilePath(),
+                                    scrap.getCourse().getCourseName(),
+                                    scrap.getCourse().getStartName(),
+                                    scrap.getCourse().getEndName(),
+                                    scrap.getCourse().getLevel(),
+                                    scrap.getCourse().getTime(),
+                                    scrap.getCourse().getMountain().getId()
+                            ),
+                            isScrapped  // isScrapped 값을 여기서 설정
+                    );
+                })
                 .collect(Collectors.toList());
 
         return new ScrapsByUserDTO(userDto, scrapDTOList);
