@@ -31,5 +31,7 @@ public interface ReviewPostRepository extends JpaRepository<ReviewPost, Long> {
     List<ReviewPost> findByMountainIdOrderByLikesDesc(Long mountainId);
 
     List<ReviewPost> findByAuthorOrderByCreatedAtDesc(User user); // 최신순
-    List<ReviewPost> findByAuthorOrderByLikesDesc(User user);
+
+    @Query("SELECT r FROM ReviewPost r LEFT JOIN r.likes l WHERE r.author = :author GROUP BY r.id ORDER BY COUNT(l) DESC")
+    List<ReviewPost> findByAuthorOrderByLikesCountDesc(User author);
 }

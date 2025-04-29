@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -260,10 +261,11 @@ public class ReviewPostService {
         List<ReviewPost> reviewPosts;
 
         if ("likes".equals(sortType)) {
-            reviewPosts = reviewPostRepository.findByAuthorOrderByLikesDesc(user);
+            reviewPosts = reviewPostRepository.findByAuthorOrderByLikesCountDesc(user);
         } else {
             reviewPosts = reviewPostRepository.findByAuthorOrderByCreatedAtDesc(user);
         }
+
 
         return reviewPosts.stream()
                 .map(post -> toResponseDTO(post, userId))
@@ -271,14 +273,27 @@ public class ReviewPostService {
     }
 
     // 좋아요 누른 리뷰 목록 가져오기
-    public List<ReviewPostResponseDTO> getLikedReviewPosts(String userId) {
+    public List<ReviewPostResponseDTO> getLikedReviewPosts(String userId, String sortType) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         List<Like> likes = likeRepository.findByUser(user);
 
-        return likes.stream()
-                .map(like -> toResponseDTO(like.getReviewPost(), userId))
+        // 좋아요한 게시글만 추출
+        List<ReviewPost> likedPosts = likes.stream()
+                .map(Like::getReviewPost)
+                .distinct() // 혹시 중복 방지
+                .collect(Collectors.toList());
+
+        // 정렬
+        if ("likes".equals(sortType)) {
+            likedPosts.sort(Comparator.comparingInt((ReviewPost p) -> p.getLikes().size()).reversed());
+        } else {
+            likedPosts.sort(Comparator.comparing(ReviewPost::getCreatedAt).reversed());
+        }
+
+        return likedPosts.stream()
+                .map(post -> toResponseDTO(post, userId))
                 .collect(Collectors.toList());
     }
     @Transactional
