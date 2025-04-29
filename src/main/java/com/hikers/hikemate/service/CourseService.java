@@ -1,6 +1,7 @@
 package com.hikers.hikemate.service;
 
 import com.hikers.hikemate.dto.course.CourseDetailDto;
+import com.hikers.hikemate.dto.course.CourseDetailWithScrapDTO;
 import com.hikers.hikemate.dto.review.CardReviewDTO;
 import com.hikers.hikemate.entity.Course;
 import com.hikers.hikemate.entity.ReviewPost;
@@ -22,7 +23,7 @@ public class CourseService {
                 .orElseThrow(() -> new IllegalArgumentException("코스를 찾을 수 없습니다."));
     }
 
-    public List<CourseDetailDto> getCourseBySort(String sortType, Long mntId) {
+    public List<CourseDetailWithScrapDTO> getCourseBySort(String sortType, Long mntId, Long memberId) {
         List<Course> courses;
 
         if ("abc".equals(sortType)) {
@@ -38,7 +39,7 @@ public class CourseService {
         }
 
         return courses.stream()
-                .map(course -> new CourseDetailDto(
+                .map(course -> new CourseDetailWithScrapDTO(
                         course.getId(),
                         course.getCourseFilePath(),
                         course.getCourseName(),
@@ -46,7 +47,16 @@ public class CourseService {
                         course.getEndName(),
                         course.getLevel(),
                         course.getTime(),
-                        course.getMountain().getId()))
+                        course.getMountain().getId(),
+                        isCourseScrappedByMember(course, memberId)
+                ))
                 .collect(Collectors.toList());
+    }
+
+    // 스크랩 여부
+    private boolean isCourseScrappedByMember(Course course, Long memberId) {
+        if (course.getScraps() == null) return false;
+        return course.getScraps().stream()
+                .anyMatch(scrap -> scrap.getUser().getId().equals(memberId));
     }
 }
