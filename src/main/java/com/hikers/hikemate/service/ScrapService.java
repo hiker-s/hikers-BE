@@ -1,5 +1,6 @@
 package com.hikers.hikemate.service;
 
+import com.hikers.hikemate.common.ScrapSortType;
 import com.hikers.hikemate.dto.UserIdNickNameDto;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
 import com.hikers.hikemate.dto.scrap.ScrapDTO;
@@ -47,7 +48,7 @@ public class ScrapService {
         scrapRepository.delete(scrap.get());
     }
 
-    @Transactional
+    /*@Transactional
     public ScrapsByUserDTO getScrapByUser(User user) {
         List<Scrap> scraps = scrapRepository.findByUser(user);
         UserIdNickNameDto userDto = new UserIdNickNameDto(user.getUserId(), user.getNickname());
@@ -70,5 +71,48 @@ public class ScrapService {
 
         return new ScrapsByUserDTO(userDto, scrapDTOList);
 
+    }*/
+
+    @Transactional
+    public ScrapsByUserDTO getScrapByUser(User user, ScrapSortType sortBy) {
+        List<Scrap> scraps;
+
+        switch (sortBy) {
+            case NAME:
+                scraps = scrapRepository.findByUserOrderByCourseName(user);
+                break;
+            case SCRAP:
+                scraps = scrapRepository.findByUserOrderByScrapCount(user);
+                break;
+            case REVIEW:
+                scraps = scrapRepository.findByUserOrderByReviewCount(user);
+                break;
+            case LEVEL:
+                scraps = scrapRepository.findByUserOrderByLevel(user);
+                break;
+            default:
+                scraps = scrapRepository.findByUser(user); // fallback
+        }
+
+        UserIdNickNameDto userDto = new UserIdNickNameDto(user.getUserId(), user.getNickname());
+
+        List<ScrapDTO> scrapDTOList = scraps.stream()
+                .map(scrap -> new ScrapDTO(
+                        scrap.getId(),
+                        new CourseDetailDto(
+                                scrap.getCourse().getId(),
+                                scrap.getCourse().getCourseFilePath(),
+                                scrap.getCourse().getCourseName(),
+                                scrap.getCourse().getStartName(),
+                                scrap.getCourse().getEndName(),
+                                scrap.getCourse().getLevel(),
+                                scrap.getCourse().getTime(),
+                                scrap.getCourse().getMountain().getId()
+                        )
+                ))
+                .collect(Collectors.toList());
+
+        return new ScrapsByUserDTO(userDto, scrapDTOList);
     }
+
 }
