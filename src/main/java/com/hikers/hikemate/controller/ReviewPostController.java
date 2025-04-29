@@ -221,17 +221,20 @@ public class ReviewPostController {
         );
     }
     @GetMapping("/liked")
-    public ResponseEntity<?> getLikedReviewPosts(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getLikedReviewPosts(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(value = "sortType", defaultValue = "latest") String sortType) {
+
         if (token == null || !token.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponseDTO(400, "유효하지 않은 토큰입니다."));
         }
         String userId = jwtUtil.extractUserId(token.substring(7).trim());
 
-        List<ReviewPostResponseDTO> likedPosts = reviewPostService.getLikedReviewPosts(userId);
+        List<ReviewPostResponseDTO> likedPosts = reviewPostService.getLikedReviewPosts(userId, sortType);
 
         SuccessResponseDTO<List<ReviewPostResponseDTO>> response =
-                new SuccessResponseDTO<>(200, "내가 좋아요한 리뷰항목을 불러오는데 성공하였습니다.", likedPosts);
+                new SuccessResponseDTO<>(200, "내가 좋아요한 리뷰 항목을 불러오는데 성공하였습니다.", likedPosts);
 
         return ResponseEntity.ok(response);
     }
