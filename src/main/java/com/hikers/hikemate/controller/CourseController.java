@@ -2,6 +2,7 @@ package com.hikers.hikemate.controller;
 
 import com.hikers.hikemate.dto.base.ErrorResponseDTO;
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
+import com.hikers.hikemate.dto.course.CourseByMntDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
 import com.hikers.hikemate.dto.course.CourseDetailWithScrapDTO;
 import com.hikers.hikemate.entity.User;
@@ -30,8 +31,7 @@ public class CourseController {
         try {
             User user = jwtUtil.getUserFromToken(token);
 
-            List<CourseDetailWithScrapDTO> courseDetailDtoList = courseService.getCourseBySort(sortType, mnt_id, user.getId());
-
+            List<CourseByMntDTO> courseByMntDTOS = courseService.getCourseBySort(sortType, mnt_id, user.getId());
 
             return ResponseEntity.status(HttpStatus.OK).body(new SuccessResponseDTO<>(
                     200,
@@ -42,7 +42,7 @@ public class CourseController {
                         case "scrap" -> "스크랩순으로 정렬된 코스 조회에 성공하였습니다.";
                         default -> "가나다순으로 정렬된 코스 조회에 성공하였습니다.";
                     },
-                    courseDetailDtoList
+                    courseByMntDTOS
             ));
         } catch (IllegalStateException e) {
             return ResponseEntity.status(400).body(new ErrorResponseDTO(400, e.getMessage()));
