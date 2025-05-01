@@ -1,6 +1,7 @@
 package com.hikers.hikemate.dto.mountain;
 
 import com.hikers.hikemate.dto.course.CourseFilePathDTO;
+import com.hikers.hikemate.dto.course.CourseForListWithNameDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +15,5 @@ public class MountainCourseDTO {
     private Long id;
     private String mntName;
     private Integer viewCount;
-    private List<CourseFilePathDTO> courses;
+    private List<CourseForListWithNameDTO> courses;
 }
