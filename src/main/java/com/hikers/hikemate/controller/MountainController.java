@@ -3,6 +3,7 @@ package com.hikers.hikemate.controller;
 import com.hikers.hikemate.dto.base.SuccessResponseDTO;
 import com.hikers.hikemate.dto.course.CourseDetailDto;
 import com.hikers.hikemate.dto.course.CourseFilePathDTO;
+import com.hikers.hikemate.dto.course.CourseForListWithNameDTO;
 import com.hikers.hikemate.dto.mountain.*;
 import com.hikers.hikemate.entity.Mountain;
 import com.hikers.hikemate.repository.MountainRepository;
@@ -35,10 +36,11 @@ public class MountainController {
                         mountain.getMntName(),
                         mountain.getViewCount(),
                         mountain.getCourses().stream()
-                                .map(course -> new CourseFilePathDTO(
+                                .map(course -> new CourseForListWithNameDTO(
                                         course.getId(),
                                         course.getMountainId(),
-                                        course.getCourseFilePath()
+                                        course.getCourseFilePath(),
+                                        course.getCourseName()
                                 )).toList()
                 ))
                 .toList();
