@@ -81,15 +81,19 @@ public class MountainController {
 
     @GetMapping("/rank")
     public ResponseEntity<?> mountainGetRank() {
-        List<Mountain> mountains = mountainRepository.findAllByOrderByViewCountDesc();
+        List<Long> targetMountainIds = List.of(
+                8L, 19L, 20L, 23L, 25L, 52L, 58L, 65L, 71L, 74L, 84L, 10L, 46L, 26L
+        );
 
-        // 5등까지만 처리
+        List<Mountain> mountains = mountainRepository
+                .findByIdInOrderByViewCountDesc(targetMountainIds);
+
         List<MountainRankDTO> mountainDtos = IntStream.range(0, Math.min(mountains.size(), 5))
                 .mapToObj(index -> {
                     Mountain mountain = mountains.get(index);
                     return new MountainRankDTO(
                             mountain.getId(),
-                            index + 1,  // 랭킹을 1부터 시작하도록 설정
+                            index + 1,
                             mountain.getMntName(),
                             mountain.getViewCount()
                     );
