@@ -82,7 +82,7 @@ public class MountainController {
     @GetMapping("/rank")
     public ResponseEntity<?> mountainGetRank() {
         List<Long> targetMountainIds = List.of(
-                8L, 19L, 20L, 23L, 25L, 52L, 58L, 65L, 71L, 74L, 84L, 10L, 46L, 26L
+                10L, 46L, 26L, 19L, 23L, 20L, 65L
         );
 
         List<Mountain> mountains = mountainRepository
