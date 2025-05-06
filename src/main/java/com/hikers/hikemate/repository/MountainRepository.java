@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MountainRepository extends JpaRepository<Mountain, Long> {
-    List<Mountain> findAllByOrderByViewCountDesc();
+    List<Mountain> findByIdInOrderByViewCountDesc(List<Long> ids);
 }
