@@ -15,7 +15,6 @@ public class WebMvcController implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:5173", "https://hikers.kro.kr")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowedOriginPatterns("*")
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SECS);
     }
