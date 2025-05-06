@@ -12,7 +12,7 @@ public class WebMvcController implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 모든 경로에 대해
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins("http://localhost:5173", "https://hikers.kro.kr")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowedOriginPatterns("*")
