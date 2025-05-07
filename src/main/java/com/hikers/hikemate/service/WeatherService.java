@@ -2,6 +2,7 @@ package com.hikers.hikemate.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.hikers.hikemate.dto.WeatherDataDTO;
 
@@ -15,11 +16,15 @@ import java.util.List;
 @Service
 public class WeatherService {
 
-    private static final String API_KEY = "4f596365486f6e613637524555656a";
-    private static final String URL_STR = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/xml/citydata/1/5/서울역";
+    @Value("${weather.api.key}")
+    private String API_KEY;
+
+    private static final String LOCATION = "서울역";
+
 
     public WeatherDataDTO getWeatherData() throws Exception {
 
+        String URL_STR = "http://openapi.seoul.go.kr:8088/" + API_KEY + "/xml/citydata/1/5/" + LOCATION;
         URL url = new URL(URL_STR);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -47,11 +52,11 @@ public class WeatherService {
         JsonNode weatherNode = outerWeatherNode.path("WEATHER_STTS");
 
         // weatherNode의 내용이 비어있는지 확인
-        if (weatherNode.isMissingNode()) {
+        /*if (weatherNode.isMissingNode()) {
             System.out.println("No WEATHER_STTS node found.");
         } else {
             System.out.println("Found WEATHER_STTS node: " + weatherNode.toString());
-        }
+        }*/
 
         WeatherDataDTO dto = new WeatherDataDTO();
         dto.setTEMP(weatherNode.path("TEMP").asText());
