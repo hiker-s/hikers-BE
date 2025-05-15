@@ -1,8 +1,8 @@
 package com.hikers.hikemate.controller;
 
-import com.hikers.hikemate.dto.LocationAuthRequestDTO;
-import com.hikers.hikemate.dto.StampResponseDTO;
-import com.hikers.hikemate.entity.Stamp;
+import com.hikers.hikemate.dto.stamp.LocationAuthRequestDTO;
+import com.hikers.hikemate.dto.stamp.StampForServerDTO;
+import com.hikers.hikemate.dto.stamp.StampResponseDTO;
 import com.hikers.hikemate.jwt.JwtUtil;
 import com.hikers.hikemate.service.StampService;
 import com.hikers.hikemate.dto.base.ErrorResponseDTO;
@@ -86,6 +86,38 @@ public class StampController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         } catch (Exception ex) {
             // 일반적인 예외 처리
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(500, "서버 오류가 발생했습니다.");
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/server")
+    public ResponseEntity<?> stampServer(
+            @RequestHeader("Authorization") String token,
+            @RequestBody StampForServerDTO request) {
+
+        try {
+            if (token == null || !token.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponseDTO(400, "유효하지 않은 토큰입니다."));
+            }
+
+            String userId = jwtUtil.extractUserId(token.substring(7).trim());
+
+            stampService.stampForServer(
+                    userId,
+                    request.getCourseId()
+            );
+
+            SuccessResponseDTO<String> successResponse = new SuccessResponseDTO<>(200, "인증 성공", "인증이 완료되었습니다.");
+            return new ResponseEntity<>(successResponse, HttpStatus.OK);
+
+        } catch (IllegalArgumentException ex) {
+            System.out.println("인증 오류: " + ex.getMessage());
+            ErrorResponseDTO errorResponse = new ErrorResponseDTO(400, ex.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             ErrorResponseDTO errorResponse = new ErrorResponseDTO(500, "서버 오류가 발생했습니다.");
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }

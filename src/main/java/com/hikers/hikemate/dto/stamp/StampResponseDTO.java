@@ -1,4 +1,4 @@
-package com.hikers.hikemate.dto;
+package com.hikers.hikemate.dto.stamp;
 
 import com.hikers.hikemate.entity.Stamp;
 import lombok.AllArgsConstructor;
