@@ -114,4 +114,24 @@ public class StampService {
         // 해당 날짜에 인증된 스탬프 목록 반환
         return stampRepository.findByCourseAndStampDate(course, date);
     }
+
+    public Stamp stampForServer(String userId, int courseId) {
+        // 사용자 정보 조회
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 코스 정보 조회
+        Course course = courseRepository.findById(courseId).orElseThrow(() -> new IllegalArgumentException("Course not found"));
+
+        int levelWeight = calculateLevelWeight(course.getLevel());
+
+        // Stamp 엔티티 생성
+        Stamp stamp = new Stamp();
+        stamp.setUser(user);
+        stamp.setCourse(course);
+        stamp.setLevelWeight(levelWeight);
+        stamp.setStampDate(LocalDate.now()); // 현재 날짜 설정
+
+        return stampRepository.save(stamp);
+    }
+
 }
